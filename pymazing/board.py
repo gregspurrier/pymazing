@@ -19,23 +19,25 @@ class Board:
         's': 'n'
     }
 
-    def __init__(self, rand_seed=None):
+    def __init__(self, num_rows, num_cols, rand_seed=None):
         self.rand = random.Random(rand_seed)
-        pass
+        self.tiles = set()
+        self.fill(num_rows, num_cols)
+        self.tile_exits = self.blaze()
 
-    def blaze(self, tile_set):
-        """Find a random path visiting all tiles in tile_set.
+    def blaze(self):
+        """Find a random path visiting all tiles in self.tiles.
 
         The result is a tile -> direction -> tile dictionary that, for each
         tile, gives the directions via which the tile can be exited and the
         tile that is reached by travelling in each of those directions."""
         visited = set()
-        tile_exits = dict((tile, {}) for tile in tile_set)
+        tile_exits = dict((tile, {}) for tile in self.tiles)
 
         def visit(tile):
-            # Randomized depth-first search of tile_set.
+            # Randomized depth-first search of self.tiles.
             visited.add(tile)
-            adj = self.adjacencies(tile, tile_set)
+            adj = self.adjacencies(tile, self.tiles)
             self.rand.shuffle(adj)
             for d, t in adj:
                 if t not in visited:
@@ -43,7 +45,7 @@ class Board:
                     tile_exits[t][self._inverted_dirs[d]] = tile
                     visit(t)
 
-        visit(next(iter(tile_set)))
+        visit(next(iter(self.tiles)))
         return tile_exits
 
     def adjacencies(self, tile, tile_set):
@@ -56,3 +58,8 @@ class Board:
             if other in tile_set:
                 ns.append((d, other))
         return ns
+
+    def fill(self, num_rows, num_cols):
+        for r in range(num_rows):
+            for c in range(num_cols):
+                self.tiles.add((r, c))
