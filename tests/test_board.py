@@ -71,3 +71,49 @@ class TestBoardCreation(unittest.TestCase):
             return (row, col + 1)
         elif d == 's':
             return (row + 1, col)
+
+class ScreenBuffer:
+    """Minimal implementation of curses.Window that accumulates characters in a
+    screen buffer."""
+    def __init__(self, maxy, maxx):
+        self.maxx = maxx
+        self.maxy = maxy
+        self.buffer = [[' '] * maxx for _ in range(maxy)]
+
+    def addch(self, y, x, ch):
+        if not 0 <= y < self.maxy:
+            raise ValueError("y out of bounds: " + str(y))
+        if not 0 <= x <= self.maxx:
+            raise ValueError("x out of bounds: " + str(x))
+        self.buffer[y][x] = ch
+
+    def addstr(self, y, x, str):
+        for i, ch in enumerate(str):
+            self.addch(y, x + i, ch)
+
+class TestBoardPainting(unittest.TestCase):
+    @given(integers(2, 5), integers(2, 5), integers())
+    def test_painting(self, rows, cols, seed):
+        b = Board(rows, cols, seed)
+        scr = ScreenBuffer(rows * 2 + 1, cols * 3 + 1)
+        b.paint(scr)
+        for tile in b.tiles:
+            r, c = tile
+            x = c * 3
+            y = r * 2
+            if 'n' in b.tile_exits[tile]:
+                self.assertEqual(scr.buffer[y][x:x + 4], list('+  +'))
+            else:
+                self.assertEqual(scr.buffer[y][x:x + 4], list('+--+'))
+            if 'w' in b.tile_exits[tile]:
+                self.assertEqual(scr.buffer[y + 1][x:x + 3], list('   '))
+            else:
+                self.assertEqual(scr.buffer[y + 1][x:x + 3], list('|  '))
+            if 'e' in b.tile_exits[tile]:
+                self.assertEqual(scr.buffer[y + 1][x + 3], ' ')
+            else:
+                self.assertEqual(scr.buffer[y + 1][x + 3], '|')
+            if 's' in b.tile_exits[tile]:
+                self.assertEqual(scr.buffer[y + 2][x:x + 4], list('+  +'))
+            else:
+                self.assertEqual(scr.buffer[y + 2][x:x + 4], list('+--+'))
