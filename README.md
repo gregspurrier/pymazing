@@ -1,6 +1,7 @@
 pymazing
 ========
-`pymazing` is a maze generator written as an exercise in learning Python. It is a work in progress.
+Pymazing is a terminal maze generator written as an exercise in learning
+Python. It is a work in progress.
 
 Feedback on how to make the code more Pythonic is welcome and appreciated.
 
@@ -15,6 +16,10 @@ Press any key to exit.
 Testing requires hypothesis.
 
 ````
-pip install hypothesis
-python -m unittest discover
+pip3 install hypothesis
+python3 -m unittest discover
 ````
+
+## License
+Pymazing is Copyright (C) 2019 Greg Spurrier. It is distributed under the terms
+of the MIT License. See [LICENSE.txt](LICENSE.txt) for the details.
