@@ -1,13 +1,14 @@
 import unittest
-from pymazing.board import Board
 
 from hypothesis import given
 from hypothesis.strategies import integers
 
-class TestBoardCreation(unittest.TestCase):
+from pymazing.square_board import SquareBoard
+
+class TestSquareBoardCreation(unittest.TestCase):
     @given(integers(2, 5), integers(2, 5), integers())
     def test_tiles_fill_board(self, rows, cols, seed):
-        b = Board(rows, cols, seed)
+        b = SquareBoard(rows, cols, seed)
         self.assertEqual(len(b.tiles), rows * cols)
         for r in range(rows):
             for c in range(cols):
@@ -15,7 +16,7 @@ class TestBoardCreation(unittest.TestCase):
 
     @given(integers(2, 5), integers(2, 5), integers())
     def test_tile_exits_visit_all_tiles(self, rows, cols, seed):
-        b = Board(rows, cols, seed)
+        b = SquareBoard(rows, cols, seed)
         self.assertEqual(set(b.tile_exits.keys()), b.tiles)
 
     @given(integers(2, 5), integers(2, 5), integers())
@@ -24,7 +25,7 @@ class TestBoardCreation(unittest.TestCase):
                          'w': 'e',
                          'e': 'w',
                          's': 'n'}
-        b = Board(rows, cols, seed)
+        b = SquareBoard(rows, cols, seed)
         for tile, exits in b.tile_exits.items():
             for d, neighbor in exits.items():
                 self.assertEqual(b.tile_exits[neighbor][inverted_dirs[d]],
@@ -32,7 +33,7 @@ class TestBoardCreation(unittest.TestCase):
 
     @given(integers(2, 5), integers(2, 5), integers())
     def test_tile_exits_lead_to_adjacent_tiles(self, rows, cols, seed):
-        b = Board(rows, cols, seed)
+        b = SquareBoard(rows, cols, seed)
         for tile, exits in b.tile_exits.items():
             for d, dest in exits.items():
                 self.assertEqual(dest, self.adjacent_tile(tile, d))
@@ -46,7 +47,7 @@ class TestBoardCreation(unittest.TestCase):
             else:
                 return (tile2, tile1)
 
-        b = Board(rows, cols, seed)
+        b = SquareBoard(rows, cols, seed)
         edges = set()
         for tile, exits in b.tile_exits.items():
             for neighbor in exits.values():
@@ -91,10 +92,10 @@ class ScreenBuffer:
         for i, ch in enumerate(str):
             self.addch(y, x + i, ch)
 
-class TestBoardPainting(unittest.TestCase):
+class TestSquareBoardPainting(unittest.TestCase):
     @given(integers(2, 5), integers(2, 5), integers())
     def test_painting(self, rows, cols, seed):
-        b = Board(rows, cols, seed)
+        b = SquareBoard(rows, cols, seed)
         scr = ScreenBuffer(rows * 2 + 1, cols * 3 + 1)
         b.paint(scr)
         for tile in b.tiles:
