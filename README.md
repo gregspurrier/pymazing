@@ -7,7 +7,7 @@ Feedback on how to make the code more Pythonic is welcome and appreciated.
 
 ## Usage
 ````
-python3 pymazing/paymazing.py
+./bin/pymazing
 ````
 
 Press any key to exit.
