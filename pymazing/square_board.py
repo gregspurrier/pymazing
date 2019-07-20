@@ -18,6 +18,11 @@ class SquareBoard(Board):
         's': 'n'
     }
 
+    def fill(self, num_rows, num_cols):
+        for r in range(num_rows):
+            for c in range(num_cols):
+                self.tiles.add((r, c))
+
     def paint_tile(self, tile, scr):
         r, c = tile
         x = c * 3
@@ -35,14 +40,11 @@ class SquareBoard(Board):
         if 's' not in self.tile_exits[tile]:
             scr.addstr(y + 2, x + 1, '--')
 
-    def adjacencies(self, tile, tile_set):
-        """Return the (direction, tile) pairs corresponding to the tiles that
-        are adjacent to tile in the provided tile_set as a list."""
-        r, c = tile
-        ns = []
-        for d, (dr, dc) in self._offsets.items():
-            other = (r + dr, c + dc)
-            if other in tile_set:
-                ns.append((d, other))
-        return ns
-
+    @staticmethod
+    def board_size(max_y, max_x):
+        """Return the maximum board size as (rows, columns) for the given
+        screen size.
+        """
+        rows = (max_y - 1) // 2
+        cols = (max_x - 1) // 3
+        return rows, cols

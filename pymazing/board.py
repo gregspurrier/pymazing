@@ -9,6 +9,7 @@ class Board:
         self.tiles = set()
         self.fill(num_rows, num_cols)
         self.tile_exits = self.blaze()
+        # self.tile_exits = {tile: {} for tile in self.tiles}
 
     def blaze(self):
         """Find a random path visiting all tiles in self.tiles.
@@ -37,7 +38,13 @@ class Board:
         for tile in self.tiles:
             self.paint_tile(tile, scr)
 
-    def fill(self, num_rows, num_cols):
-        for r in range(num_rows):
-            for c in range(num_cols):
-                self.tiles.add((r, c))
+    def adjacencies(self, tile, tile_set):
+        """Return the (direction, tile) pairs corresponding to the tiles that
+        are adjacent to tile in the provided tile_set as a list."""
+        r, c = tile
+        ns = []
+        for d, (dr, dc) in self._offsets.items():
+            other = (r + dr, c + dc)
+            if other in tile_set:
+                ns.append((d, other))
+        return ns

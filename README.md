@@ -7,10 +7,14 @@ Feedback on how to make the code more Pythonic is welcome and appreciated.
 
 ## Usage
 ````
-./bin/pymazing
+./bin/pymazing [hexagon|square]
 ````
 
-Press any key to exit.
+The command line argument determines the shape of the tiles that make
+up the maze. If no argument is given, the default is `square`.
+
+A random maze will be drawn, taking up as much of the terminal screen
+as possible. Press any key to exit.
 
 ## Testing
 Testing requires hypothesis.
